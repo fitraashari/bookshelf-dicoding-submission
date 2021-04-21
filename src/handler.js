@@ -51,12 +51,36 @@ const AddBooksHandler = (request, h) => {
   return response;
 };
 
-const getAllBooksHandler = () => ({
+const getAllBooksHandler = (request,h) => {
+  let result = books
+  if(request.query.name || request.query.reading || request.query.finished){
+    if (request.query.name) {
+        result = result.filter(buku=>{
+        const namaBuku = buku.name.toLowerCase();
+        const qrNama = request.query.name.toLowerCase();
+        return namaBuku.includes(qrNama);
+        })
+    }
+    if(request.query.reading === '1' || request.query.reading === '0'){
+      const reading = (request.query.reading === '1')?true:false;
+      result = result.filter(buku=>buku.reading === reading)
+    }
+    if(request.query.finished === '1' || request.query.finished === '0'){
+      const finished = (request.query.finished === '1')?true:false;
+      result = result.filter(buku=>buku.finished === finished)
+    }
+  }
+    result = result.map(buku=>{
+      const res = {id:buku.id,name:buku.name,publisher:buku.publisher}
+      return res;
+    })
+  return {
   status: 'success',
   data: {
-    books,
-  },
-});
+    books:result,
+    },
+  }
+};
 
 const getBooksByIdHandler = (request, h) => {
   const { bookId } = request.params;
@@ -84,7 +108,7 @@ const updateBooksHandler = (request, h) => {
   const {
     name, year, author, summary, publisher, pageCount, readPage, reading,
   } = { ...request.payload };
-  const updatedAt = new Date().toISOString;
+  const updatedAt = new Date().toISOString();
   const finished = (pageCount === readPage);
   if (!name) {
     const response = h.response({
@@ -132,7 +156,7 @@ const updateBooksHandler = (request, h) => {
   return response;
 };
 
-const deleteBookHandler = (request, h) => {
+const deletesBookHandler = (request, h) => {
   const { bookId } = request.params;
   const index = books.findIndex((book) => book.id === bookId);
   if (index < 0) {
@@ -153,5 +177,5 @@ const deleteBookHandler = (request, h) => {
 };
 
 module.exports = {
-  AddBooksHandler, getAllBooksHandler, getBooksByIdHandler, updateBooksHandler, deleteBookHandler,
+  AddBooksHandler, getAllBooksHandler, getBooksByIdHandler, updateBooksHandler, deletesBookHandler,
 };
