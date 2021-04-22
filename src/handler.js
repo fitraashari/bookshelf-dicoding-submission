@@ -51,35 +51,35 @@ const AddBooksHandler = (request, h) => {
   return response;
 };
 
-const getAllBooksHandler = (request,h) => {
-  let result = books
-  if(request.query.name || request.query.reading || request.query.finished){
+const getAllBooksHandler = (request) => {
+  let result = books;
+  if (request.query.name || request.query.reading || request.query.finished) {
     if (request.query.name) {
-        result = result.filter(buku=>{
+      result = result.filter((buku) => {
         const namaBuku = buku.name.toLowerCase();
         const qrNama = request.query.name.toLowerCase();
         return namaBuku.includes(qrNama);
-        })
+      });
     }
-    if(request.query.reading === '1' || request.query.reading === '0'){
-      const reading = (request.query.reading === '1')?true:false;
-      result = result.filter(buku=>buku.reading === reading)
+    if (request.query.reading === '1' || request.query.reading === '0') {
+      const reading = (request.query.reading === '1');
+      result = result.filter((buku) => buku.reading === reading);
     }
-    if(request.query.finished === '1' || request.query.finished === '0'){
-      const finished = (request.query.finished === '1')?true:false;
-      result = result.filter(buku=>buku.finished === finished)
+    if (request.query.finished === '1' || request.query.finished === '0') {
+      const finished = (request.query.finished === '1');
+      result = result.filter((buku) => buku.finished === finished);
     }
   }
-    result = result.map(buku=>{
-      const res = {id:buku.id,name:buku.name,publisher:buku.publisher}
-      return res;
-    })
+  result = result.map((buku) => {
+    const res = { id: buku.id, name: buku.name, publisher: buku.publisher };
+    return res;
+  });
   return {
-  status: 'success',
-  data: {
-    books:result,
+    status: 'success',
+    data: {
+      books: result,
     },
-  }
+  };
 };
 
 const getBooksByIdHandler = (request, h) => {
